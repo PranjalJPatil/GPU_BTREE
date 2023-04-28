@@ -1,0 +1,3 @@
+[submodule "betta"]
+	path = betta
+	url = https://github.com/saltsystemslab/betta.git
