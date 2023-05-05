@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 #include <cstdint>
-#include<poggers/allocators/one_size_allocator.cuh>
+#include<poggers/beta/slab_one_size.cuh>
 #define NUM_ALLOCS 31250000
 #define ALLOC_SIZE 128
 using namespace poggers::allocators;
@@ -37,11 +37,11 @@ class PoolAllocator_1 {
   PoolAllocator_1() {}
   ~PoolAllocator_1() {}
   void init() {
-    ptr = one_size_allocator::generate_on_device(NUM_ALLOCS, ALLOC_SIZE, 420);
+    ptr = slab_one_size::generate_on_device(NUM_ALLOCS, ALLOC_SIZE, 420);
     cudaDeviceSynchronize();
   }
   void free() {
-    one_size_allocator::free_on_device(ptr);
+    slab_one_size::free_on_device(ptr);
     cudaDeviceSynchronize();
     //CHECK_ERROR(memoryUtil::deviceFree(d_pool));
     //CHECK_ERROR(memoryUtil::deviceFree(d_count));
@@ -58,18 +58,20 @@ class PoolAllocator_1 {
     ptr = rhs.ptr;
     return * this;
   }
-
+  __device__ void createContext(){
+      ptr->create_local_context();
+  }
   template<typename AddressT = uint32_t>
   __device__ __forceinline__ AddressT allocate() {
-    return ptr->get_offset();
+    return ptr->malloc_offset();
   }
   template<typename AddressT = uint32_t>
   __device__ __forceinline__ uint32_t* getAddressPtr(AddressT& address) {
-    return (uint32_t *)ptr->get_mem_from_offset(address);
+    return (uint32_t *)ptr->get_ptr_from_offset(address);
   }
   template<typename AddressT = uint32_t>
   __device__ __forceinline__ void freeAddress(AddressT& address) {
-    ptr->free_offset(address);
+    ptr->free(ptr->get_ptr_from_offset(address));
   }
 
   __host__ __device__ uint32_t getCapacity() { return NUM_ALLOCS; }
@@ -77,6 +79,6 @@ class PoolAllocator_1 {
   __host__ __device__ uint32_t getOffset() { return 0; }
 
  private:
-    one_size_allocator *ptr;
+    slab_one_size *ptr;
 
 };

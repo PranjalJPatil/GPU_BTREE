@@ -153,6 +153,8 @@ __forceinline__ __device__ bool split_node1(uint32_t myParent,
                                             uint32_t& nodeIdx,
                                             uint32_t& mydata,
                                             AllocatorT*& memAlloc) {
+  //memalloc->createContext();
+
   uint32_t rightData = __shfl_up_sync(0x0000FFFF, mydata, 16);
 
   if (lane_id() < 18)
@@ -171,7 +173,6 @@ __forceinline__ __device__ bool split_node1(uint32_t myParent,
   {
     release_lock(memAlloc->getAddressPtr(nodeIdx));
     release_lock(memAlloc->getAddressPtr(myParent));
-
     return true;
   }
 
@@ -321,6 +322,7 @@ __device__ void insertion_unit(bool& to_be_inserted,
                                ValueT& myValue,
                                uint32_t*& d_root,
                                AllocatorT* memAlloc) {
+  
   uint32_t work_queue;
   uint32_t last_work_queue = 0;
   uint32_t rootAddress = *d_root;

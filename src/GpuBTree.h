@@ -27,10 +27,9 @@
 #include "utils.cuh"
 
 #include "allocator/pool_allocator.cuh"
-//#include "allocator/pool_allocator_1.cuh"
+#include "allocator/pool_allocator_1.cuh"
 #include "map/kernels/map_warps.cu"
 #include "map/kernels/map_kernels.cu"
 
 #include "map/GpuBTree.cuh"
 #include "map/host.cu"
-//#include <poggers/allocators/one_size_allocator.cuh>

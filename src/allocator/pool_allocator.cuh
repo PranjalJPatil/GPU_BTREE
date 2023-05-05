@@ -55,7 +55,9 @@ class PoolAllocator {
     d_count = rhs.d_count;
     return *this;
   }
-
+  __device__ void createContext(){
+      return;
+  }
   template<typename AddressT = uint32_t>
   __device__ __forceinline__ AddressT allocate() {
     return atomicAdd(d_count, 1);

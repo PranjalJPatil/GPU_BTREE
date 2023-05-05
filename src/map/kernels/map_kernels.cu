@@ -37,7 +37,7 @@ __global__ void insert_keys(uint32_t* d_root,
                             AllocatorT allocator) {
   uint32_t tid = threadIdx.x + blockIdx.x * blockDim.x;
   uint32_t laneId = threadIdx.x & 0x1F;
-
+  //create...
   KeyT myKey;
   ValueT myValue;
   bool to_insert = false;
@@ -55,7 +55,9 @@ __global__ void insert_keys(uint32_t* d_root,
 }
 
 template<typename AllocatorT>
+
 __global__ void init_btree(uint32_t* d_root, AllocatorT allocator) {
+  //allocator.create.localcontext();
   uint32_t laneId = threadIdx.x & 0x1F;
 
   uint32_t root_id;

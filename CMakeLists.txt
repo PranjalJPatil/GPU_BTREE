@@ -15,11 +15,8 @@ if ("${CMAKE_BUILD_TYPE}" STREQUAL "")
     set(CMAKE_BUILD_TYPE Release)
 endif ()
 ## Package Target
-CPMAddPackage(
-  NAME poggers
-  GITHUB_REPOSITORY huntermBerkeley/poggers
-  GIT_TAG origin/main
-)
+add_subdirectory(betta)
+
 # Auto-detect GPU architecture, sets ${CUDA_ARCHS}
 include("cmake/AutoDetectCudaArch.cmake")
 include("cmake/FindGoogleTest.cmake")
@@ -73,4 +70,3 @@ set(CMAKE_VS_SDK_INCLUDE_DIRECTORIES
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(unittests)
-add_subdirectory(betta)
