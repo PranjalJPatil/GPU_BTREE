@@ -72,32 +72,12 @@ int main(int argc, char* argv[]) {
   btree.insertKeys(d_keys, d_values, numKeys, SourceT::DEVICE);
   timer.timerStop();
 
-  
-   std::vector<key_t> keys_deleted;
-  uint32_t numDeletedKeys = 100000;
-  keys_deleted.reserve(numDeletedKeys);
-
-  for (uint32_t iKey = 0; iKey < numDeletedKeys; iKey++) {
-    keys_deleted.push_back(iKey);
-  }
-  std::shuffle(keys_deleted.begin(), keys_deleted.end(), g);
-
-  // Move data to GPU
-  key_t* d_keys_deleted;
-  CHECK_ERROR(memoryUtil::deviceAlloc(d_keys_deleted, numDeletedKeys));
-  CHECK_ERROR(
-      memoryUtil::cpyToDevice(keys_deleted.data(), d_keys_deleted, numDeletedKeys));
-
-  // Apply the deleteion batch to the btree
-  btree.deleteKeys(d_keys_deleted, numDeletedKeys, SourceT::DEVICE);
-
   printf("Build: %i pairs in %f ms (%0.2f MKeys/sec)\n",
          numKeys,
          timer.getMsElapsed(),
          float(numKeys) * 1e-6 / timer.getSElapsed());
 
   // cleanup
-  cudaFree(d_keys_deleted);
   cudaFree(d_keys);
   cudaFree(d_values);
   btree.free();
